@@ -20,30 +20,52 @@ import java.util.Map.Entry;
  */
 public class SogouScel2Txt 
 {
-	
-	public static void main(String[] args)throws Exception 
-	{		
-   	 sogou("G:/各大输入法词库/搜狗/sogou/城市信息大全/安徽/安徽.scel","G:/各大输入法词库/搜狗/sogou/城市信息大全/安徽/安徽.txt",false);
-	}
+  
+  public static void main(String[] args)throws Exception 
+  {   
+     //sogou("G:/各大输入法词库/搜狗/sogou/城市信息大全/安徽/安徽.scel","G:/各大输入法词库/搜狗/sogou/城市信息大全/安徽/安徽.txt",false);
+     String path = "D:\\GitHub\\ThesaurusSpider\\SougouThesaurusSpider\\sogou_dicts_chinese\\403";
+     process_dir(path);
+  }
+
+  public static void process_dir(String path) throws Exception 
+  {
+      File file = new File(path);      //获取其file对象
+      File[] fs = file.listFiles();     //遍历path下的文件和目录，放在File数组中
+      for(File f:fs){                //遍历File[]数组
+          String fileName = f.getName();  //获取文件和目录名
+          if(f.isDirectory()){
+            process_dir(path +"/"+fileName);
+          }
+          else {  //另外可用fileName.endsWith("txt")来过滤出以txt结尾的文件
+
+              //logger.info("isFile:"+f);     //打印文件全路径
+              //logger.info("isFile:"+fileName); //打印文件名
+
+              if( fileName.endsWith(".scel")){
+                sogou(path +"/"+fileName , path +"/"+fileName +".txt", false);
+              }
+          }
+      }
+  }
    
-	/**
-	 * 读取scel的词库文件,生成txt格式的文件
-	 * @param inputPath 输入路径
-	 * @param outputPath 输出路径
-	 * @param isAppend  是否拼接追加词库内容,true 代表追加,false代表重建
-	 * **/
+  /**
+   * 读取scel的词库文件,生成txt格式的文件
+   * @param inputPath 输入路径
+   * @param outputPath 输出路径
+   * @param isAppend  是否拼接追加词库内容,true 代表追加,false代表重建
+   * **/
   
    public static void sogou(String inputPath,String outputPath,boolean isAppend) throws IOException
    {  
        File file=new File(inputPath);  
        if(!isAppend)
        {
-	       if(Files.exists(Paths.get(outputPath),LinkOption.values()))
-	       {
-	    	   System.out.println("存储此文件已经删除");
-	    	   Files.deleteIfExists(Paths.get(outputPath));
-	    	   
-	       }
+         if(Files.exists(Paths.get(outputPath),LinkOption.values()))
+         {
+           System.out.println("存储此文件已经删除");
+           Files.deleteIfExists(Paths.get(outputPath));
+         }
        }
        RandomAccessFile raf=new RandomAccessFile(outputPath, "rw");
       
